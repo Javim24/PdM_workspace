@@ -53,3 +53,4 @@ language.settings.xml
 Module.symvers
 Mkfile.old
 dkms.conf
+*.list

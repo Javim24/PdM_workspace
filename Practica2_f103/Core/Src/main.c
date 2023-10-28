@@ -31,6 +31,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define PERIODO_1 1000
+#define PERIODO_2 200
+#define PERIODO_3 100 //valores en milisegundos
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +58,12 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+const tick_t secuenciaPeriodos[] = {PERIODO_1, PERIODO_2, PERIODO_3};
+uint8_t largoSecuencia = sizeof(secuenciaPeriodos) / sizeof(secuenciaPeriodos[0]);
+
+const uint8_t NUM_PERIODOS = 5;
+uint8_t numRepeticiones = NUM_PERIODOS * 2;
 
 /* USER CODE END 0 */
 
@@ -85,8 +96,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  delay_t delay100;
-  delayInit(&delay100, 100);
+
+  delay_t myDelay;
+  tick_t delayInicial = secuenciaPeriodos[0] / 2;
+  delayInit(&myDelay, delayInicial);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,10 +110,21 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  if (delayRead(&delay100)){
-		  HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+
+	  for(uint8_t i=0; i<largoSecuencia; i++){
+		  tick_t delayTime = secuenciaPeriodos[i] / 2;
+		  delayWrite(&myDelay, delayTime);
+
+		  uint8_t k = 0;
+		  while(k < numRepeticiones){
+			  if (delayRead(&myDelay)){
+				  HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+				  k++;
+			  }
+		  }
 	  }
   }
+
   /* USER CODE END 3 */
 }
 

@@ -85,6 +85,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  delay_t delay100;
+  delayInit(&delay100, 100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -94,6 +96,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  if (delayRead(&delay100)){
+		  HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+	  }
   }
   /* USER CODE END 3 */
 }

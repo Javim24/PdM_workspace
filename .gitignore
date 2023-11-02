@@ -51,6 +51,10 @@ modules.order
 .metadata/
 language.settings.xml
 Module.symvers
+
+PracticasOtros/
+Debug/
+*.launch
 Mkfile.old
 dkms.conf
 *.list

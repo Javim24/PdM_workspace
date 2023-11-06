@@ -31,6 +31,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define PERIODO_1 1000
+#define PERIODO_2 200
+#define PERIODO_3 100 //valores en milisegundos
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,6 +60,12 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+const tick_t secuenciaPeriodos[] = {PERIODO_1, PERIODO_2, PERIODO_3};
+uint8_t largoSecuencia = sizeof(secuenciaPeriodos) / sizeof(secuenciaPeriodos[0]);
+
+const uint8_t NUM_PERIODOS = 5;
+uint8_t numRepeticiones = NUM_PERIODOS * 2;
 
 /* USER CODE END 0 */
 
@@ -93,15 +104,44 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   delay_t myDelay;
-  delayInit(&myDelay, 100);
+  delay_t * myDelayPtr = NULL;
+  myDelayPtr = &myDelay;
+
+  const tick_t T_ON = 200; //tiempo en ms que debe permanecer encendido el led
+  const float MAX_DUTY_CYCLE = 0.9;
+  float dutyCycle = 0.5;	//calculo dutycycle para cada periodo, como maximo puede ser 0.9
+
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  uint8_t loopCount = 0;
+  tick_t periodo = secuenciaPeriodos[loopCount];
+  dutyCycle = (float) T_ON / periodo;
+  tick_t delayTime=  periodo * dutyCycle;
+  loopCount++;
+  delayInit(myDelayPtr, delayTime);
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  if(delayRead(&myDelay)){
+
+	  if(delayRead(myDelayPtr)){
 		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		  tick_t periodo = secuenciaPeriodos[loopCount / numRepeticiones];
+		  dutyCycle = (float) T_ON / periodo;
+		  if(dutyCycle > MAX_DUTY_CYCLE)
+			  dutyCycle = MAX_DUTY_CYCLE;
+
+		  delayTime = periodo * dutyCycle;
+		  if(HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin) == GPIO_PIN_RESET){
+			  delayTime = secuenciaPeriodos[loopCount / numRepeticiones] * (1 - dutyCycle);
+		  }
+
+		  delayWrite(myDelayPtr, delayTime);
+		  loopCount++;
+		  loopCount %= largoSecuencia * numRepeticiones;
 	  }
   }
 

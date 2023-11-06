@@ -1,6 +1,9 @@
 /*
  * API_delay.h
  *
+ *	Modulo para manejar retardos no bloqueantes.
+ *
+ *
  *  Created on: Nov 5, 2023
  *      Author: javi
  */

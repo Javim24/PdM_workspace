@@ -61,11 +61,11 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-const tick_t secuenciaPeriodos[] = {PERIODO_1, PERIODO_2, PERIODO_3};
-uint8_t largoSecuencia = sizeof(secuenciaPeriodos) / sizeof(secuenciaPeriodos[0]);
+const tick_t secuenciaPeriodos[] = {PERIODO_1, PERIODO_2, PERIODO_3};	//secuencia de periodos que hace el led
+uint8_t largoSecuencia = sizeof(secuenciaPeriodos) / sizeof(secuenciaPeriodos[0]); //largo de toda la secuencia
 
-const uint8_t NUM_PERIODOS = 5;
-uint8_t numRepeticiones = NUM_PERIODOS * 2;
+const uint8_t NUM_PERIODOS = 5; //cantidad de periodos por cada paso de la secuencia
+uint8_t numRepeticiones = NUM_PERIODOS * 2; //cantidad de cambios de estado de led en cada paso de la secuencia
 
 /* USER CODE END 0 */
 
@@ -105,21 +105,21 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  delay_t myDelay;
-  delay_t * myDelayPtr = NULL;
-  myDelayPtr = &myDelay;
+  delay_t myDelay;			//estructura que controla el delay
+  delay_t * myDelayPtr = NULL;		//puntero a la estructura que controla el delay
+  myDelayPtr = &myDelay;		
 
-  const tick_t T_ON = 200; //tiempo en ms que debe permanecer encendido el led
-  const float MAX_DUTY_CYCLE = 0.9;
-  float dutyCycle = 0.5;	//calculo dutycycle para cada periodo, como maximo puede ser 0.9
+  const tick_t T_ON = 200; 		//tiempo en ms que debe permanecer encendido el led
+  const float MAX_DUTY_CYCLE = 0.9;	//ciclo de trabajo máximo
+  float dutyCycle = 0.5;		//variable que se calcula para cada paso de la secuencia, tratando de que se cumpla el T_ON
 
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-  uint8_t loopCount = 0;
-  tick_t periodo = secuenciaPeriodos[loopCount];
-  dutyCycle = (float) T_ON / periodo;
-  tick_t delayTime=  periodo * dutyCycle;
+  uint8_t loopCount = 0;		//variable que cuenta la posición del ciclo en la que se encuentra el programa
+  tick_t periodo = secuenciaPeriodos[loopCount];	//variable para almacenar el periodo actual
+  dutyCycle = (float) T_ON / periodo;	
+  tick_t delayTime=  periodo * dutyCycle;		//tiempo de delay para estado ON
   loopCount++;
   delayInit(myDelayPtr, delayTime);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 
   while (1)
   {
@@ -136,7 +136,7 @@ int main(void)
 
 		  delayTime = periodo * dutyCycle;
 		  if(HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin) == GPIO_PIN_RESET){
-			  delayTime = secuenciaPeriodos[loopCount / numRepeticiones] * (1 - dutyCycle);
+			  delayTime = periodo * (1 - dutyCycle);
 		  }
 
 		  delayWrite(myDelayPtr, delayTime);

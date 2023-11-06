@@ -8,8 +8,10 @@
 #include "API_delay.h"
 
 void delayInit( delay_t * delay, tick_t duration ) {
-	delay->duration = duration;
-	delay->running = false;
+	if(delay != NULL){
+		delay->duration = duration;
+		delay->running = false;
+	}
 }
 
 
@@ -17,15 +19,17 @@ bool_t delayRead( delay_t * delay ){
 	tick_t actualTime = HAL_GetTick();
 	bool_t status = false;
 
-	if (delay->running) {
-		if ((actualTime - delay->startTime) >= delay->duration) {
-			delay->running = false;
-			status = true;
+	if(delay != NULL){
+		if (delay->running) {
+			if ((actualTime - delay->startTime) >= delay->duration) {
+				delay->running = false;
+				status = true;
+			}
 		}
-	}
-	else {
-		delay->running = true;
-		delay->startTime = actualTime;
+		else {
+			delay->running = true;
+			delay->startTime = actualTime;
+		}
 	}
 
 	return status;
@@ -33,5 +37,6 @@ bool_t delayRead( delay_t * delay ){
 
 
 void delayWrite( delay_t * delay, tick_t duration ){
-	delay->duration = duration;
+	if(delay != NULL)
+		delay->duration = duration;
 }

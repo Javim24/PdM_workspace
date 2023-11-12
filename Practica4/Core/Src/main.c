@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Este programa conmuta el estado del led presente en la placa
+  * 				  nucleo f401RE de manera no bloqueante, y varía el periodo de
+  * 				  conmutación cuando el usuario presiona el botón de la placa.
   ******************************************************************************
   * @attention
   *
@@ -42,11 +44,6 @@
  UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
- debounceState_t debounceState;			//variable de estado global
- delay_t debounceDelay;
-
-const uint8_t DELAY_TIME = 40;				//constante para el tiempo de anti-rebote
 
 /* USER CODE END PV */
 
@@ -98,8 +95,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  debounceFSM_init();
-  delayInit(&debounceDelay, DELAY_TIME);
+  debounceFSM_init(B1_GPIO_Port, B1_Pin);	//inicializa la FSM para leer el botón B1
+
+  delay_t myDelay;							//estructura de delay para conmutar el estado del led
+  tick_t secuenciaDuraciones[] = {100, 500};	//periodos de encendido en ms
+  const uint8_t LARGO_SECUENCIA = sizeof(secuenciaDuraciones) / sizeof(secuenciaDuraciones[0]);
+  uint8_t indiceSecuencia = 0;
+  delayInit(&myDelay, secuenciaDuraciones[indiceSecuencia]);
 
   while (1)
   {
@@ -108,6 +110,16 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 	  debounceFSM_update();
+	  bool_t keyStatus = readKey();
+	  if(keyStatus){
+		  indiceSecuencia++;
+		  indiceSecuencia %= LARGO_SECUENCIA;
+		  delayWrite(&myDelay, secuenciaDuraciones[indiceSecuencia]);
+	  }
+
+	  if(delayRead(&myDelay)){
+		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	  }
 
 
   }
@@ -227,84 +239,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-void debounceFSM_init(){
-	debounceState = BUTTON_UP;
-}
-
-
-void debounceFSM_update(){
-	bool_t isButtonPressed;
-
-	switch(debounceState){
-
-		case BUTTON_UP:
-				buttonReleased();
-
-				isButtonPressed = readButton();
-
-				if(isButtonPressed){
-					debounceState = BUTTON_FALLING;
-				}
-			break;
-
-		case BUTTON_FALLING:
-				if(delayRead(&debounceDelay)){
-					isButtonPressed = readButton();
-					if(isButtonPressed){
-						debounceState = BUTTON_DOWN;
-					}
-					else{
-						debounceState = BUTTON_UP;
-					}
-				}
-
-			break;
-
-		case BUTTON_DOWN:
-				buttonPressed();
-
-				isButtonPressed = readButton();
-
-				if(! isButtonPressed){
-					debounceState = BUTTON_RAISING;
-				}
-			break;
-
-		case BUTTON_RAISING:
-			if(delayRead(&debounceDelay)){
-				isButtonPressed = readButton();
-				if(! isButtonPressed){
-						debounceState = BUTTON_UP;
-					}
-				else{
-					debounceState = BUTTON_DOWN;
-				}
-			}
-
-			break;
-
-		default:
-			debounceFSM_init();
-			break;
-	}
-
-}
-
-void buttonPressed(){
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-}
-
-void buttonReleased(){
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-}
-
-bool_t readButton(){
-	return ! (bool_t) HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin);
-}
-
-
-
 
 /* USER CODE END 4 */
 

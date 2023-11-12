@@ -35,19 +35,12 @@ extern "C" {
 #include "stdint.h"
 #include "stdbool.h"
 #include "API_delay.h"
+#include "API_debounce.h"
 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
-typedef enum{
-	BUTTON_UP,
-	BUTTON_FALLING,
-	BUTTON_DOWN,
-	BUTTON_RAISING,
-} debounceState_t;
-
 
 /* USER CODE END ET */
 
@@ -65,14 +58,6 @@ typedef enum{
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
-void debounceFSM_init();		// debe cargar el estado inicial
-void debounceFSM_update();	// debe leer las entradas, resolver la lógica de
-							// transición de estados y actualizar las salidas
-void buttonPressed();			// debe encender el LED
-void buttonReleased();		// debe apagar el LED
-
-bool_t readButton();		//función que lee el estado del botón
 
 /* USER CODE END EFP */
 
@@ -92,8 +77,6 @@ bool_t readButton();		//función que lee el estado del botón
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
-extern const uint8_t DELAY_TIME;				//constante para el tiempo de anti-rebote
 
 /* USER CODE END Private defines */
 

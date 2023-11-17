@@ -21,7 +21,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "API_uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,13 +92,33 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uartInit();
-  uartSendStringSize((uint8_t*) "hola\r", 2);
-  while (1)
-  {
-    /* USER CODE END WHILE */
+  debounceFSM_init(B1_GPIO_Port, B1_Pin);	//inicializa la FSM para leer el botón B1
 
-    /* USER CODE BEGIN 3 */
+	delay_t myDelay;							//estructura de delay para conmutar el estado del led
+	tick_t secuenciaDuraciones[] = {100, 500};	//periodos de encendido en ms
+	const uint8_t LARGO_SECUENCIA = sizeof(secuenciaDuraciones) / sizeof(secuenciaDuraciones[0]);
+	uint8_t indiceSecuencia = 0;
+	delayInit(&myDelay, secuenciaDuraciones[indiceSecuencia]);
+
+	while (1)
+	{
+	  /* USER CODE END WHILE */
+
+	  /* USER CODE BEGIN 3 */
+
+	  debounceFSM_update();
+	  bool_t keyStatus = readKey();
+	  if(keyStatus){
+		  indiceSecuencia++;
+		  indiceSecuencia %= LARGO_SECUENCIA;
+		  delayWrite(&myDelay, secuenciaDuraciones[indiceSecuencia]);
+	  }
+
+	  if(delayRead(&myDelay)){
+		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	  }
+
+
   }
   /* USER CODE END 3 */
 }

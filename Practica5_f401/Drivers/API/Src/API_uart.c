@@ -12,6 +12,8 @@ static const uint32_t MODE_TX_RX = UART_MODE_TX_RX;
 static const uint32_t HW_CONTROL = UART_HWCONTROL_NONE;
 static const uint32_t OVERSAMPLING = UART_OVERSAMPLING_16;
 
+static const uint16_t UART_TIMEOUT_MS = 100;
+
 static uint8_t mensajeInicio[] = "UART2 INICIADA CON ÉXITO EN 115200 8N1\r\n";
 
 bool_t uartInit(){
@@ -44,7 +46,7 @@ void uartSendString(uint8_t * pstring){
 
 
 	uint16_t strSize = strlen((char *) pstring);
-	HAL_UART_Transmit(&UartHandle, pstring, strSize, HAL_MAX_DELAY);
+	HAL_UART_Transmit(&UartHandle, pstring, strSize, UART_TIMEOUT_MS);
 }
 
 
@@ -60,7 +62,7 @@ void uartSendStringSize(uint8_t * pstring, uint16_t size){
 		size = strSize;
 	}
 
-	HAL_UART_Transmit(&UartHandle, pstring, size, HAL_MAX_DELAY);
+	HAL_UART_Transmit(&UartHandle, pstring, size, UART_TIMEOUT_MS);
 }
 
 

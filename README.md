@@ -14,3 +14,6 @@ Esta práctica consiste en la modularización de las funciones de delay no bloqu
 
 ### Práctica 4:
 Esta práctica consiste en la creación de una máquina de estados para eliminar el rebote al pulsar un botón. Esta realizada de manera modular, y también integra el módulo de retardo no bloqueante de las prácticas anteriores. La práctica fue realizada con la placa NUCLEO-F401RE.
+
+### Práctica 5:
+Esta práctica implementa un módulo con funciones para facilitar la utilización de la uart del microcontrolador. En la parte 2 de la práctica se integra con el programa de la práctica anterior para envíar un mensaje cuando se presiona y suelta el botón de la placa.

@@ -1,42 +1,37 @@
 #include "API_uart.h"
-#include "inttypes.h"
 
-static UART_HandleTypeDef UartHandle;
+static UART_HandleTypeDef UartHandle;	//estructura para acceder a la uart
+static bool_t uartEnabled = false;		//variable para verificar si se inició correctamente la uart
+
+static USART_TypeDef * UART_INSTANCE = USART2;
+static const uint32_t BAUD_RATE = 115200;
+static const uint32_t WORD_LENGTH = UART_WORDLENGTH_8B;
+static const uint32_t STOP_BITS = UART_STOPBITS_1;
+static const uint32_t PARITY = UART_PARITY_NONE;
+static const uint32_t MODE_TX_RX = UART_MODE_TX_RX;
+static const uint32_t HW_CONTROL = UART_HWCONTROL_NONE;
+static const uint32_t OVERSAMPLING = UART_OVERSAMPLING_16;
+
+static uint8_t mensajeInicio[] = "UART2 INICIADA CON ÉXITO EN 115200 8N1\n";
 
 bool_t uartInit(){
-	  UartHandle.Instance = USART2;
-	  UartHandle.Init.BaudRate = 115200;
-	  UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-	  UartHandle.Init.StopBits = UART_STOPBITS_1;
-	  UartHandle.Init.Parity = UART_PARITY_NONE;
-	  UartHandle.Init.Mode = UART_MODE_TX_RX;
-	  UartHandle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	  UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
+	  UartHandle.Instance = UART_INSTANCE;
+	  UartHandle.Init.BaudRate = BAUD_RATE;
+	  UartHandle.Init.WordLength = WORD_LENGTH;
+	  UartHandle.Init.StopBits = STOP_BITS;
+	  UartHandle.Init.Parity = PARITY;
+	  UartHandle.Init.Mode = MODE_TX_RX;
+	  UartHandle.Init.HwFlowCtl = HW_CONTROL;
+	  UartHandle.Init.OverSampling = OVERSAMPLING;
 
-	  bool_t estado = false;
 	  if (HAL_UART_Init(&UartHandle) == HAL_OK)
 	  {
-		  estado = true;
-		  //enviar mensaje
-		  char mensaje[64] = "Uart inicializada con exito.\r\n";
-		  uartSendString((uint8_t*) mensaje);
+		  uartEnabled = true;
 
-		  snprintf(mensaje, 64, "Baudrate: %lu\r\n", (unsigned long) UartHandle.Init.BaudRate);
-		  uartSendString((uint8_t*) mensaje);
-
-		  snprintf(mensaje, 64, "Largo de palabra: %lu\r\n", (unsigned long) UartHandle.Init.WordLength);
-		  uartSendString((uint8_t*) mensaje);
-
-		  snprintf(mensaje, 64, "Bits de stop: %lu\r\n", (unsigned long) UartHandle.Init.StopBits);
-		  uartSendString((uint8_t*) mensaje);
-
-		  snprintf(mensaje, 64, "Bit paridad: %lu\r\n", (unsigned long) UartHandle.Init.Parity);
-		  uartSendString((uint8_t*) mensaje);
-
+		  //enviar mensaje de inicio correcto
+		  uartSendString(mensajeInicio);
 	  }
-
-
-	  return estado;
+	  return uartEnabled;
 }
 
 void uartSendString(uint8_t * pstring){
@@ -64,6 +59,3 @@ void uartSendStringSize(uint8_t * pstring, uint16_t size){
 
 
 void uartReceiveStringSize(uint8_t * pstring, uint16_t size);
-
-
-

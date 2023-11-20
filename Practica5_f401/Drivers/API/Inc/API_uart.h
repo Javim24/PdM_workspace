@@ -5,6 +5,7 @@
 #include "stdbool.h"
 #include "stdio.h"
 #include "string.h"
+#include "inttypes.h"
 
 typedef bool bool_t;
 

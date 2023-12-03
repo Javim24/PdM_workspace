@@ -8,6 +8,8 @@
 #include "API_control_acceso.h"
 #include "API_delay.h"
 #include "API_lcd.h"
+#include "API_mfrc522.h"
+#include "string.h"
 
 
 /**
@@ -30,11 +32,12 @@ static FSM_STATE_enum handler_tarjeta_incorrecta();
 
 API_StatusTypedef controlAcceso_init(){
 	estadoFSM = ESTADO_INICIAL;
-	//rfid init
 	if (LCD_init() == API_ERROR)
 		return API_ERROR;
 	if (LCD_printText("OK") == API_ERROR)
 		return API_ERROR;
+
+	mfrc522_init();
 	//db init
 	//delay init
 
@@ -66,6 +69,13 @@ API_StatusTypedef controlAcceso_update(){
 
 static FSM_STATE_enum handler_busqueda_tarjeta(){
 	//buscar tarjeta y devolver el siguiente estado
+	uint8_t uid[4];
+	if ( mfrc522_leerUIDTarjeta(uid) ){
+		char strBuffer[16];
+		sprintf(strBuffer, "%X", *uid);
+		LCD_printText(strBuffer);
+	}
+
 	return BUSQUEDA_TARJETA;
 }
 

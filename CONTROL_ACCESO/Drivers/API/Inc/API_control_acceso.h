@@ -12,18 +12,25 @@
 #ifndef API_INC_API_CONTROL_ACCESO_H_
 #define API_INC_API_CONTROL_ACCESO_H_
 
+/**
+ * @brief Enumeración para control de errores.
+ */
+typedef enum {
+	API_OK,
+	API_ERROR
+} API_StatusTypedef;
 
 /**
  * @brief Función de inicio del sistema
  * 		  de control de acceso.
  */
-void controlAcceso_init();
+API_StatusTypedef controlAcceso_init();
 
 /**
  * @brief Función que actualiza el estado
  * 		  del sistema según la entrada.
  */
-void controlAcceso_update();
+API_StatusTypedef controlAcceso_update();
 
 
 #endif /* API_INC_API_CONTROL_ACCESO_H_ */

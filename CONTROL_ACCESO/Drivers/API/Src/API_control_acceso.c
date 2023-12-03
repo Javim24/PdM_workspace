@@ -6,6 +6,9 @@
  */
 
 #include "API_control_acceso.h"
+#include "API_delay.h"
+#include "API_lcd.h"
+
 
 /**
  * @brief Enumeración de estados posibles del sistema.
@@ -25,11 +28,20 @@ static FSM_STATE_enum handler_tarjeta_incorrecta();
 
 
 
-void controlAcceso_init(){
+API_StatusTypedef controlAcceso_init(){
 	estadoFSM = ESTADO_INICIAL;
+	//rfid init
+	if (LCD_init() == API_ERROR)
+		return API_ERROR;
+	if (LCD_printText("OK") == API_ERROR)
+		return API_ERROR;
+	//db init
+	//delay init
+
+	return API_OK;
 }
 
-void controlAcceso_update(){
+API_StatusTypedef controlAcceso_update(){
 	FSM_STATE_enum nuevoEstado;
 	switch(estadoFSM){
 	case BUSQUEDA_TARJETA:
@@ -48,6 +60,7 @@ void controlAcceso_update(){
 	}
 
 	estadoFSM = nuevoEstado;
+	return API_OK;
 }
 
 

@@ -9,7 +9,9 @@
 #include "API_delay.h"
 #include "API_lcd.h"
 #include "API_mfrc522.h"
+#include "API_db.h"
 #include "string.h"
+#include "stdio.h"
 
 
 /**
@@ -28,7 +30,7 @@ static FSM_STATE_enum handler_busqueda_tarjeta();
 static FSM_STATE_enum handler_tarjeta_correcta();
 static FSM_STATE_enum handler_tarjeta_incorrecta();
 
-
+static DB_datosUsuario_t datosUsuario;
 
 API_StatusTypedef controlAcceso_init(){
 	estadoFSM = ESTADO_INICIAL;
@@ -39,6 +41,8 @@ API_StatusTypedef controlAcceso_init(){
 
 	mfrc522_init();
 	//db init
+	if ( DB_init(&datosUsuario) == false)
+		return API_ERROR;
 	//delay init
 
 	return API_OK;
@@ -63,6 +67,7 @@ API_StatusTypedef controlAcceso_update(){
 	}
 
 	estadoFSM = nuevoEstado;
+	//actualizar salida
 	return API_OK;
 }
 
@@ -72,7 +77,12 @@ static FSM_STATE_enum handler_busqueda_tarjeta(){
 	uint8_t uid[4];
 	if ( mfrc522_leerUIDTarjeta(uid) ){
 		char strBuffer[16];
-		sprintf(strBuffer, "%X", *uid);
+		sprintf(strBuffer, "Tarjeta:\n");
+		for(uint8_t indice=0; indice<4; indice++){
+			char tmp[15];
+			sprintf(tmp, "%X:", uid[indice]);
+			strcat(strBuffer, tmp);
+		}
 		LCD_printText(strBuffer);
 	}
 

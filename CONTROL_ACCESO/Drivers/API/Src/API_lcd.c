@@ -80,7 +80,14 @@ LCD_StatusTypedef LCD_printText(char *ptrTexto) {
 	uint8_t contadorPosicion = 0;
 	LCD_setCursor(LCD_FILA_1, 0);
 	while ((*ptrTexto) != NULL_CHAR) {
-		if (LCD_printChar(*ptrTexto++) == LCD_ERROR)
+		char caracter = *ptrTexto++;
+		if (caracter == '\n'){
+			LCD_setCursor(LCD_FILA_2, 0);
+			contadorPosicion = 0;
+			continue;
+		}
+
+		if (LCD_printChar(caracter) == LCD_ERROR)
 			return LCD_ERROR;
 
 		contadorPosicion++;

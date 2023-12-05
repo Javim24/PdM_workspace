@@ -23,12 +23,14 @@ typedef enum {
 /**
  * @brief Función de inicio del sistema
  * 		  de control de acceso.
+ * @retval API_StatusTypedef
  */
 API_StatusTypedef controlAcceso_init();
 
 /**
  * @brief Función que actualiza el estado
  * 		  del sistema según la entrada.
+ * @retval API_StatusTypedef
  */
 API_StatusTypedef controlAcceso_update();
 

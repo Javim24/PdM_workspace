@@ -1,24 +1,31 @@
+/**
+ * @brief Módulo que simula una base de datos.
+ *        Implementa una interfaz pública para que
+ *        la aplicación que lo utilice no conozca los detalles
+ *        internos del funcionamiento de la base de datos.
+ */
+
 #ifndef API_INC_API_DB_H_
 #define API_INC_API_DB_H_
 
 #include "API_types.h"
 
-#define UID_SIZE			4
-#define LARGO_NOMBRE		16
 
-typedef struct {
-	uint8_t uid[UID_SIZE];
-	uint8_t nombre[LARGO_NOMBRE];
-	bool_t accesoConcedido;
-} DB_datosUsuario_t;
+#define UID_SIZE			4           //tamaño en bytes del UID de las tarjetas RFID
 
-//DB_datosUsuario_t USUARIO_1; //= {
-//	.uid = {0xC0, 0x78, 0xA8, 0xE4},
-//	.nombre =  "Javier",
-//	.accesoConcedido =  true
-//};
+/**
+*   @brief Inicializa la base de datos.
+*   @retval Estado de ejecución.
+*/
+bool_t DB_init();
 
-bool_t DB_init(DB_datosUsuario_t *);
-void DB_consultarUID(DB_datosUsuario_t *, uint8_t *);
+/**
+*   @brief Realiza una consulta a la base
+*          de datos a partir de un UID.
+*   @retval Devuelve verdadero si el UID se
+*           encuentra en la base de datos, o falso
+*           si no se encuentra.
+*/
+bool_t DB_consultarUID(uint8_t *);
 
 #endif /* API_INC_API_DB_H_ */

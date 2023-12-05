@@ -10,7 +10,7 @@
 
 static uint32_t *usuariosAutorizados[LARGO_USUARIOS_AUTORIZADOS];//arreglo de punteros a UIDs autorizados
 
-static const uint8_t USUARIO_1[] = { 0xC0, 0x78, 0xA8, 0xE4 };//definición de una tarjeta autorizada
+static const uint8_t USUARIO_1[] = { 0xC0, 0x7D, 0x5E, 0xA8 };//definición de una tarjeta autorizada
 
 /**
  *   @brief Inicializa la base de datos.

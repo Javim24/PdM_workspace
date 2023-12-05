@@ -8,6 +8,7 @@
 
 #include "stdint.h"             //para utilizar tipos de datos enteros de tamaño fijo (uint8, uint16, etc...)
 #include "stdbool.h"            //para tipo de datos booleano
+#include <stddef.h>				//para usar NULL
 
 typedef bool bool_t;            //definición de tipo de dato booleano
 

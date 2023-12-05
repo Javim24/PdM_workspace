@@ -31,12 +31,16 @@ static FSM_STATE_enum handler_tarjeta_correcta();
 static FSM_STATE_enum handler_tarjeta_incorrecta();
 
 static DB_datosUsuario_t datosUsuario;
+static delay_t delayFSM;
+static const DELAY_MENSAJE = 3000;
+
+static const uint8_t mensajeBusquedaTarjeta[]  = "Acerque tarjeta...";
 
 API_StatusTypedef controlAcceso_init(){
 	estadoFSM = ESTADO_INICIAL;
 	if (LCD_init() == API_ERROR)
 		return API_ERROR;
-	if (LCD_printText("Aproxime tarjeta...") == API_ERROR)
+	if (LCD_printText(mensajeBusquedaTarjeta) == API_ERROR)
 		return API_ERROR;
 
 	mfrc522_init();
@@ -44,6 +48,7 @@ API_StatusTypedef controlAcceso_init(){
 	if ( DB_init(&datosUsuario) == false)
 		return API_ERROR;
 	//delay init
+	delayInit(&delayFSM, DELAY_MENSAJE);
 
 	return API_OK;
 }
@@ -73,7 +78,7 @@ API_StatusTypedef controlAcceso_update(){
 	//actualizar salida
 	switch(estadoFSM){
 		case BUSQUEDA_TARJETA:
-			LCD_printText("Aproxime tarjeta...");
+			LCD_printText(mensajeBusquedaTarjeta);
 			break;
 		case TARJETA_CORRECTA:{
 					char strBuffer[64];
@@ -126,12 +131,16 @@ static FSM_STATE_enum handler_busqueda_tarjeta(){
 static FSM_STATE_enum handler_tarjeta_correcta(){
 	//mostrar en pantalla resultado por un tiempo
 
+	if (delayRead(&delayFSM))
+		return BUSQUEDA_TARJETA;
 
-	return BUSQUEDA_TARJETA;
+	return TARJETA_CORRECTA;
 }
 
 static FSM_STATE_enum handler_tarjeta_incorrecta(){
 	//mostrar en pantalla resultado por un tiempo
-	HAL_Delay(5000);
-	return BUSQUEDA_TARJETA;
+	if (delayRead(&delayFSM))
+		return BUSQUEDA_TARJETA;
+
+	return TARJETA_INCORRECTA;
 }

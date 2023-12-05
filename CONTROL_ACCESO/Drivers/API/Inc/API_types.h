@@ -11,5 +11,4 @@
 
 typedef bool bool_t;            //definición de tipo de dato booleano
 
-
 #endif /* API_INC_API_TYPES_H_ */

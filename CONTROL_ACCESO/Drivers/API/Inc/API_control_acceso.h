@@ -8,7 +8,6 @@
  * 		  del módulo.
  */
 
-
 #ifndef API_INC_API_CONTROL_ACCESO_H_
 #define API_INC_API_CONTROL_ACCESO_H_
 
@@ -16,8 +15,7 @@
  * @brief Enumeración para control de errores.
  */
 typedef enum {
-	API_OK,
-	API_ERROR
+	API_OK, API_ERROR
 } API_StatusTypedef;
 
 /**
@@ -33,6 +31,5 @@ API_StatusTypedef controlAcceso_init();
  * @retval API_StatusTypedef
  */
 API_StatusTypedef controlAcceso_update();
-
 
 #endif /* API_INC_API_CONTROL_ACCESO_H_ */

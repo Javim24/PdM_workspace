@@ -17,21 +17,20 @@
 #define LCD_ADDRESS					0x27
 
 /**
-*   @brief Inicializa el periférico I2C.
-*	@retval Estado de ejecución.
-**/
+ *   @brief Inicializa el periférico I2C.
+ *	@retval Estado de ejecución.
+ **/
 bool_t port_init();
 
 /**
-*   @brief Escribe un byte por I2C.
-*	@retval Estado de ejecución.
-*/
+ *   @brief Escribe un byte por I2C.
+ *	@retval Estado de ejecución.
+ */
 bool_t port_i2cWriteByte(uint8_t);
 
 /**
-*   @brief Implementa un delay bloqueante.
-*/
+ *   @brief Implementa un delay bloqueante.
+ */
 void port_delay(uint32_t);
-
 
 #endif /* API_INC_API_LCD_PORT_H_ */

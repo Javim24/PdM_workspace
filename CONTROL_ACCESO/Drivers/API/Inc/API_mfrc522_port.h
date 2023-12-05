@@ -16,11 +16,8 @@
 #define CS_GPIO_Port        GPIOB
 #define SPI_TIMEOUT		10
 
-
 bool_t portInit();
-void spiWrite(uint8_t reg_addr, uint8_t * txData, uint16_t size);
-void spiRead(uint8_t reg_addr, uint8_t * rxData, uint16_t size);
-
-
+void spiWrite(uint8_t reg_addr, uint8_t *txData, uint16_t size);
+void spiRead(uint8_t reg_addr, uint8_t *rxData, uint16_t size);
 
 #endif /* API_INC_API_MFRC522_PORT_H_ */

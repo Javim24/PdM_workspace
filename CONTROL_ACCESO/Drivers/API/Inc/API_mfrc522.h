@@ -13,8 +13,6 @@
 
 void mfrc522_init();
 void mfrc522_reset();
-bool_t mfrc522_leerUIDTarjeta(uint8_t * uid);
-
-
+bool_t mfrc522_leerUIDTarjeta(uint8_t *uid);
 
 #endif /* API_INC_API_MFRC522_H_ */

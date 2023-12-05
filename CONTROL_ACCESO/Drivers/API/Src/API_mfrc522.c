@@ -208,12 +208,15 @@ static void mfrc522_enviarComandoTarjeta(uint8_t *comando, uint8_t largo,
 
 static bool_t mfrc522_esperarRespuestaTarjeta() {
 	bool_t respuestaRecibida = false;
+	uint16_t MAX_LOOPS = 10000;					//variable para evitar un  loop infinito en caso de que haya problemas con el módulo
 	while (!respuestaRecibida) {
 		uint8_t irqReg = mfrc522_readRegister(ComIrqReg);
 		if (irqReg & ComIrqReg_TimerIrq)		//ver si ocurre un timeout
 			break;
 		if (irqReg & ComIrqReg_RxIrq)	//si se recibe una respuesta
 			respuestaRecibida = true;
+		if (--MAX_LOOPS == 0)			//si se cumple la cantidad máxima de loops, terminar.
+			break;
 	}
 	return respuestaRecibida;
 }

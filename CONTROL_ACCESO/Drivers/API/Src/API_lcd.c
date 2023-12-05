@@ -118,6 +118,8 @@ LCD_StatusTypedef LCD_printText(char *ptrTexto) {
 	if (ptrTexto == NULL)
 		return LCD_ERROR;
 
+	LCD_clear();
+
 	uint8_t contadorPosicion = 0;
 	LCD_setCursor(LCD_FILA_1, 0);
 	while ((*ptrTexto) != NULL_CHAR) {

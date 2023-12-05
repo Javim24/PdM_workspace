@@ -36,7 +36,7 @@ API_StatusTypedef controlAcceso_init(){
 	estadoFSM = ESTADO_INICIAL;
 	if (LCD_init() == API_ERROR)
 		return API_ERROR;
-	if (LCD_printText("OK") == API_ERROR)
+	if (LCD_printText("Aproxime tarjeta...") == API_ERROR)
 		return API_ERROR;
 
 	mfrc522_init();
@@ -66,8 +66,35 @@ API_StatusTypedef controlAcceso_update(){
 		break;
 	}
 
+	if (estadoFSM == nuevoEstado)
+		return API_OK;
+
 	estadoFSM = nuevoEstado;
 	//actualizar salida
+	switch(estadoFSM){
+		case BUSQUEDA_TARJETA:
+			LCD_printText("Aproxime tarjeta...");
+			break;
+		case TARJETA_CORRECTA:{
+					char strBuffer[64];
+					sprintf(strBuffer, "Tarjeta:\n");
+					for(uint8_t indice=0; indice<4; indice++){
+						char tmp[15];
+						sprintf(tmp, "%X:", datosUsuario.uid[indice]);
+						strcat(strBuffer, tmp);
+					}
+					LCD_printText(strBuffer);
+			break;
+		}
+		case TARJETA_INCORRECTA:
+			LCD_printText("Tarjeta incorrecta");
+			break;
+		default:
+			//manejar error
+			//handler_default();
+			break;
+		}
+
 	return API_OK;
 }
 
@@ -76,14 +103,21 @@ static FSM_STATE_enum handler_busqueda_tarjeta(){
 	//buscar tarjeta y devolver el siguiente estado
 	uint8_t uid[4];
 	if ( mfrc522_leerUIDTarjeta(uid) ){
-		char strBuffer[16];
-		sprintf(strBuffer, "Tarjeta:\n");
-		for(uint8_t indice=0; indice<4; indice++){
-			char tmp[15];
-			sprintf(tmp, "%X:", uid[indice]);
-			strcat(strBuffer, tmp);
-		}
-		LCD_printText(strBuffer);
+//		memcpy(datosUsuario.uid, uid, 4);
+		DB_consultarUID(&datosUsuario, uid);
+		if (datosUsuario.accesoConcedido)
+			return TARJETA_CORRECTA;
+		else
+			return TARJETA_INCORRECTA;
+
+		//		char strBuffer[16];
+//		sprintf(strBuffer, "Tarjeta:\n");
+//		for(uint8_t indice=0; indice<4; indice++){
+//			char tmp[15];
+//			sprintf(tmp, "%X:", uid[indice]);
+//			strcat(strBuffer, tmp);
+//		}
+//		LCD_printText(strBuffer);
 	}
 
 	return BUSQUEDA_TARJETA;
@@ -91,10 +125,13 @@ static FSM_STATE_enum handler_busqueda_tarjeta(){
 
 static FSM_STATE_enum handler_tarjeta_correcta(){
 	//mostrar en pantalla resultado por un tiempo
-	return TARJETA_CORRECTA;
+
+
+	return BUSQUEDA_TARJETA;
 }
 
 static FSM_STATE_enum handler_tarjeta_incorrecta(){
 	//mostrar en pantalla resultado por un tiempo
-	return TARJETA_INCORRECTA;
+	HAL_Delay(5000);
+	return BUSQUEDA_TARJETA;
 }

@@ -10,6 +10,6 @@ typedef struct {
 } DB_datosUsuario_t;
 
 bool_t DB_init(DB_datosUsuario_t *);
-void DB_consultarUID(DB_datosUsuario_t *);
+void DB_consultarUID(DB_datosUsuario_t *, uint8_t *);
 
 #endif /* API_INC_API_DB_H_ */

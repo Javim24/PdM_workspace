@@ -10,8 +10,6 @@
 #include "API_lcd.h"
 #include "API_mfrc522.h"
 #include "API_db.h"
-#include "string.h"
-#include "stdio.h"
 
 /**
  * @brief Enumeración de estados posibles de
@@ -43,7 +41,9 @@ static uint8_t uid[UID_SIZE];//en esta variable se guarda el UID de la última t
 static delay_t delayFSM;	//estructura para controlar el delay no bloqueante
 static const tick_t DELAY_MENSAJE = 3000;//tiempo en ms que se muestra un mensaje en el LCD
 
-static const uint8_t mensajeBusquedaTarjeta[] = "Acerque tarjeta...";
+static const uint8_t mensajeBusquedaTarjeta[] = "APROXIME UN TAG";
+static const uint8_t mensajeTarjetaCorrecta[] = "ACCESO CONCEDIDO";
+static const uint8_t mensajeTarjetaIncorrecta[] = "ACCESO DENEGADO";
 
 /**
  *	@brief Función que inicializa todos los módulos
@@ -106,18 +106,11 @@ API_StatusTypedef controlAcceso_update() {
 		LCD_printText(mensajeBusquedaTarjeta);
 		break;
 	case TARJETA_CORRECTA: {
-		char strBuffer[64];
-		sprintf(strBuffer, "Tarjeta:\n");
-		for (uint8_t indice = 0; indice < 4; indice++) {
-			char tmp[15];
-			sprintf(tmp, "%X:", uid[indice]);
-			strcat(strBuffer, tmp);
-		}
-		LCD_printText(strBuffer);
+		LCD_printText(mensajeTarjetaCorrecta);
 		break;
 	}
 	case TARJETA_INCORRECTA:
-		LCD_printText("Tarjeta incorrecta");
+		LCD_printText(mensajeTarjetaIncorrecta);
 		break;
 	default:
 		//manejar error

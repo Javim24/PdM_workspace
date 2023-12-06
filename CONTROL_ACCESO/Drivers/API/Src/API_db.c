@@ -8,9 +8,9 @@
 
 #define LARGO_USUARIOS_AUTORIZADOS				4					//cantidad de usuarios que pueden ser guardados
 
-static uint32_t *usuariosAutorizados[LARGO_USUARIOS_AUTORIZADOS];//arreglo de punteros a UIDs autorizados
+static uint32_t *usuariosAutorizados[LARGO_USUARIOS_AUTORIZADOS]; //arreglo de punteros a UIDs autorizados
 
-static const uint8_t USUARIO_1[] = { 0xC0, 0x7D, 0x5E, 0xA8 };//definición de una tarjeta autorizada
+static const uint8_t USUARIO_1[] = { 0xC0, 0x7D, 0x5E, 0xA8 }; //definición de una tarjeta autorizada
 
 /**
  *   @brief Inicializa la base de datos.
@@ -22,7 +22,7 @@ static const uint8_t USUARIO_1[] = { 0xC0, 0x7D, 0x5E, 0xA8 };//definición de u
 bool_t DB_init() {
 	usuariosAutorizados[0] = (uint32_t*) USUARIO_1;
 
-	return true;
+	return true;//devuelve siempre verdadero ya que este es un módulo que simula el comportamiento de la db
 }
 
 /**

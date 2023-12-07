@@ -40,14 +40,14 @@ static void errorHandler();
 /**
  *	@brief Variables globales privadas.
  */
-static uint8_t uid[UID_SIZE];//en esta variable se guarda el UID de la última tarjeta leída.
+static uint8_t uid[UID_SIZE]; //en esta variable se guarda el UID de la última tarjeta leída.
 static delay_t delayFSM;	//estructura para controlar el delay no bloqueante
 static const tick_t DELAY_MENSAJE = 3000;//tiempo en ms que se muestra un mensaje en el LCD
 
 //mensajes para mostrar en el LCD para cada estado
-static const uint8_t mensajeBusquedaTarjeta[] = "APROXIME UN TAG";
-static const uint8_t mensajeTarjetaCorrecta[] = "ACCESO CONCEDIDO";
-static const uint8_t mensajeTarjetaIncorrecta[] = "ACCESO DENEGADO";
+static const char mensajeBusquedaTarjeta[] = "APROXIME UN TAG";
+static const char mensajeTarjetaCorrecta[] = "ACCESO CONCEDIDO";
+static const char mensajeTarjetaIncorrecta[] = "ACCESO DENEGADO";
 
 /**
  *	@brief Función que inicializa todos los módulos

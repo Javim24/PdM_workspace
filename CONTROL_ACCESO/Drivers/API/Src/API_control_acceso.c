@@ -34,6 +34,9 @@ static FSM_STATE_enum handler_busqueda_tarjeta();
 static FSM_STATE_enum handler_tarjeta_correcta();
 static FSM_STATE_enum handler_tarjeta_incorrecta();
 
+//función para mostrar un mensaje de error en la pantalla
+static void errorHandler();
+
 /**
  *	@brief Variables globales privadas.
  */
@@ -91,8 +94,7 @@ API_StatusTypedef controlAcceso_update() {
 		nuevoEstado = handler_tarjeta_incorrecta();
 		break;
 	default:
-		//manejar error
-		//handler_default();
+		nuevoEstado = ESTADO_INICIAL;
 		break;
 	}
 
@@ -113,8 +115,7 @@ API_StatusTypedef controlAcceso_update() {
 		LCD_printText(mensajeTarjetaIncorrecta);
 		break;
 	default:
-		//manejar error
-		//handler_default();
+		errorHandler();
 		break;
 	}
 
@@ -165,4 +166,11 @@ static FSM_STATE_enum handler_tarjeta_incorrecta() {
 		return BUSQUEDA_TARJETA;
 
 	return TARJETA_INCORRECTA;
+}
+
+/**
+ * @brief Muestra un mensaje de error en el LCD.
+ */
+static void errorHandler() {
+	LCD_printText("Error");
 }

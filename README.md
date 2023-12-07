@@ -17,3 +17,6 @@ Esta práctica consiste en la creación de una máquina de estados para eliminar
 
 ### Práctica 5:
 Esta práctica implementa un módulo con funciones para facilitar la utilización de la uart del microcontrolador. En la parte 2 de la práctica se integra con el programa de la práctica anterior para envíar un mensaje cuando se presiona y suelta el botón de la placa.
+
+### TP final - Control de acceso
+El trabajo final para la materia consiste en un sistema de control de acceso que utiliza tarjetas RFID.

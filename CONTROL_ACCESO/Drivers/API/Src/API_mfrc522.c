@@ -228,7 +228,7 @@ static bool_t mfrc522_detectarTarjeta() {
 static bool_t mfrc522_leerUID(uint8_t *uid) {
 	uint8_t cmdBuffer[] = { CMD_SEL_CL1, NVB_CL1 };
 
-	const uint8_t txSize = 0;//txSize = 0 indica que todos se transmite 8 bits.
+	const uint8_t txSize = 0;		//txSize = 0 indica que se transmite 8 bits.
 	mfrc522_enviarComandoTarjeta(cmdBuffer, sizeof(cmdBuffer), txSize);
 
 	bool_t respuestaRecibida = mfrc522_esperarRespuestaTarjeta();
@@ -239,7 +239,7 @@ static bool_t mfrc522_leerUID(uint8_t *uid) {
 	bool_t lecturaUid = mfrc522_leerBufferFIFO(responseBuffer, UID_SIZE);
 
 	if (lecturaUid) {
-		for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t i = 0; i < UID_SIZE; i++) {
 			uid[i] = responseBuffer[i];
 		}
 	}
@@ -255,8 +255,9 @@ static void mfrc522_enviarComandoTarjeta(uint8_t *comando, uint8_t largo,
 		uint8_t txSize) {
 	mfrc522_writeRegister(CommandReg, Idle);
 
-	// Para resetear los bits de interrupciones
-	// en el registro ComIrqReg.
+	// Se resetean los bits de interrupciones
+	// en el registro ComIrqReg para luego
+	// poder detectar si se activa alguno.
 	uint8_t valor_ComIrqReg = mfrc522_readRegister(ComIrqReg);
 	mfrc522_writeRegister(ComIrqReg, valor_ComIrqReg & (~ComIrqReg_Set1));
 
@@ -267,7 +268,7 @@ static void mfrc522_enviarComandoTarjeta(uint8_t *comando, uint8_t largo,
 
 	mfrc522_writeRegister(CommandReg, Transceive);
 
-	// Iniciar la transmisión e indica que se transmiten solo txSize bits.
+	// Inicia la transmisión e indica que se transmiten solo txSize bits.
 	// txSize = 0 indica que se transmiten 8 bits.
 	mfrc522_writeRegister(BitFramingReg, BitFramingReg_StartSend | txSize);
 }
